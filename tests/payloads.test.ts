@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { buildPayload, looksLikeHttpUrl } from "@/lib/payloads";
 import type { FieldValues, PayloadType } from "@/lib/types";
 
@@ -102,6 +104,23 @@ describe("empty payloads rejected", () => {
     ["vcard", { org: "Only Org" }],
   ])("%s with %j returns empty", (type, fields) => {
     expect(buildPayload(type as PayloadType, fields as FieldValues)).toBe("");
+  });
+});
+
+describe("golden fixtures (captured from the server payload builder)", () => {
+  // Authored byte-exact from the API's own buildPayload and regenerable
+  // against a live local worker via scripts/capture-goldens.mjs; a change to
+  // the wire format must update this file deliberately.
+  const golden = JSON.parse(
+    readFileSync(resolve(__dirname, "../fixtures/golden-payloads.json"), "utf8"),
+  ) as Record<string, string>;
+  it("every fixture reproduces exactly", () => {
+    for (const [key, expected] of Object.entries(golden)) {
+      const i = key.indexOf(":");
+      const type = key.slice(0, i) as PayloadType;
+      const fields = JSON.parse(key.slice(i + 1)) as FieldValues;
+      expect(buildPayload(type, fields), key).toBe(expected);
+    }
   });
 });
 

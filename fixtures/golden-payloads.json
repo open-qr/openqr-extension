@@ -1,0 +1,13 @@
+{
+  "url:{\"url\":\"example.com/launch?utm=ext#top\"}": "https://example.com/launch?utm=ext#top",
+  "text:{\"text\":\"Table for two, 19:30\"}": "Table for two, 19:30",
+  "email:{\"email\":\"hi@example.com\",\"subject\":\"Two seats\",\"body\":\"Please + confirm\"}": "mailto:hi@example.com?subject=Two%20seats&body=Please%20%2B%20confirm",
+  "phone:{\"phone\":\"+44 7700 900123\"}": "tel:+44 7700 900123",
+  "sms:{\"phone\":\"+44 7700 900123\",\"message\":\"Your table is ready\"}": "SMSTO:+44 7700 900123:Your table is ready",
+  "whatsapp:{\"phone\":\"+44 7700 900123\",\"message\":\"Menu for tonight\"}": "https://wa.me/447700900123?text=Menu%20for%20tonight",
+  "wifi:{\"ssid\":\"Cafe;Guest \\\"Premium\\\"\",\"password\":\"pa\\\\ss;wo:rd,1\",\"encryption\":\"WPA\"}": "WIFI:T:WPA;S:Cafe\\;Guest \\\"Premium\\\";P:pa\\\\ss\\;wo\\:rd\\,1;;",
+  "wifi:{\"ssid\":\"OpenNet\",\"encryption\":\"nopass\"}": "WIFI:T:nopass;S:OpenNet;;",
+  "geo:{\"lat\":\"51.5074\",\"lng\":\"-0.1278\"}": "geo:51.5074,-0.1278",
+  "vcard:{\"firstName\":\"Jo\",\"lastName\":\"Smith; Jr\",\"phone\":\"+447700900123\",\"email\":\"jo@example.com\",\"org\":\"Smith, Sons & Co\",\"title\":\"Founder\",\"url\":\"example.com\",\"address\":\"1 Main Street\\nLondon\"}": "BEGIN:VCARD\nVERSION:3.0\nN:Smith\\; Jr;Jo;;;\nFN:Jo Smith\\; Jr\nORG:Smith\\, Sons & Co\nTITLE:Founder\nTEL;TYPE=CELL:+447700900123\nEMAIL;TYPE=INTERNET:jo@example.com\nURL:https://example.com\nADR;TYPE=WORK:;;1 Main Street\\nLondon;;;;\nEND:VCARD",
+  "vcard:{\"firstName\":\"Zoë\",\"phone\":\"+447700900123\"}": "BEGIN:VCARD\nVERSION:3.0\nN:;Zoë;;;\nFN:Zoë\nTEL;TYPE=CELL:+447700900123\nEND:VCARD"
+}

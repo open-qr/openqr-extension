@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@open-qr/sdk':
-        specifier: 0.2.1
-        version: 0.2.1
+        specifier: 0.3.0-beta.1
+        version: 0.3.0-beta.1
       qr-code-styling:
         specifier: 1.9.2
         version: 1.9.2(patch_hash=4d1f0a8bb47a248342dc86a5cb7c1fa71d9ed502b47fc27539a3a5f9fee6f684)
@@ -157,8 +157,8 @@ packages:
     resolution: {integrity: sha512-QviPdJImDi/jMAvBfqaw+19BndMd/sizXVW3NnpMd3VJGz++QXkOHcP9kWR/smHG0hNjHeyuHFyrx/5lD0oNcQ==}
     engines: {node: '>= 10'}
 
-  '@open-qr/sdk@0.2.1':
-    resolution: {integrity: sha512-fIDTJ37FZVH/7am9nXqQULHyHnIcbib54Ni7juXDuORBM/pitCeYOe2Bk9puiiog9yHCXrYX57PbBkwkhTH33g==}
+  '@open-qr/sdk@0.3.0-beta.1':
+    resolution: {integrity: sha512-3SahIrTCfxSgkOZz1u+zSHxdXvu6nZsicbDl+TXj1vSizDv3wMx4XBe+i9VgBCi6sgLEOz33BRAnA37kjYwHvQ==}
     engines: {node: '>=18'}
 
   '@oxc-project/types@0.150.0':
@@ -867,7 +867,7 @@ snapshots:
       '@napi-rs/canvas-win32-arm64-msvc': 1.0.9
       '@napi-rs/canvas-win32-x64-msvc': 1.0.9
 
-  '@open-qr/sdk@0.2.1': {}
+  '@open-qr/sdk@0.3.0-beta.1': {}
 
   '@oxc-project/types@0.150.0': {}
 

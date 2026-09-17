@@ -1,12 +1,14 @@
 /**
- * Thin API client for https://openqr.uk/v1.
+ * API layer: a thin adapter over the published @open-qr/sdk.
  *
- * Deliberately fetch-based (not the SDK class): the extension needs the
- * Idempotency-Key header and response metadata on every call, which the
- * published SDK does not expose yet. Wire shapes mirror @open-qr/sdk and the
- * API's OpenAPI spec; when the SDK grows these capabilities the internals
- * here swap over without touching callers.
+ * The adapter exists to keep two things stable for the rest of the extension:
+ *  - one error type (ApiError) with a machine `code`, so the coordinator and
+ *    the UI never import SDK internals;
+ *  - a uniform {data, meta} return shape with rate/replay metadata.
+ * 0.3.0-beta.1 of the SDK grew me()/listCodes/createStaticCode/idempotency;
+ * when it stabilises as 0.3.0 this file shrinks further, not grows.
  */
+import { OpenQR, OpenQRError } from "@open-qr/sdk";
 import { DEFAULT_BASE_URL } from "./types";
 import type {
   CodeRow,
@@ -34,67 +36,6 @@ export class ApiError extends Error {
   }
 }
 
-const CODE_FOR_STATUS: Record<number, string> = {
-  400: "invalid_request",
-  401: "unauthorized",
-  403: "plan_limit_exceeded",
-  404: "not_found",
-  409: "slug_taken",
-  429: "rate_limited",
-};
-
-function parseRateMeta(headers: Headers): RateMeta {
-  const meta: RateMeta = {};
-  const limit = headers.get("x-ratelimit-limit");
-  const remaining = headers.get("x-ratelimit-remaining");
-  const reset = headers.get("x-ratelimit-reset");
-  const retryAfter = headers.get("retry-after");
-  if (limit != null) meta.limit = Number(limit);
-  if (remaining != null) meta.remaining = Number(remaining);
-  if (reset != null) meta.reset = Number(reset);
-  if (retryAfter != null && /^\d+$/.test(retryAfter)) meta.retryAfter = Number(retryAfter);
-  if (headers.get("idempotent-replay") === "true") meta.idempotentReplay = true;
-  return meta;
-}
-
-interface RequestOpts {
-  method?: string;
-  body?: unknown;
-  idempotencyKey?: string;
-}
-
-async function request<T>(
-  key: string,
-  baseUrl: string,
-  path: string,
-  opts: RequestOpts = {},
-): Promise<{ data: T; meta: RateMeta }> {
-  const headers: Record<string, string> = { Authorization: `Bearer ${key}` };
-  if (opts.body !== undefined) headers["Content-Type"] = "application/json";
-  if (opts.idempotencyKey) headers["Idempotency-Key"] = opts.idempotencyKey;
-
-  const res = await fetch(`${baseUrl}${path}`, {
-    method: opts.method ?? "GET",
-    headers,
-    body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
-  });
-  const meta = parseRateMeta(res.headers);
-
-  if (!res.ok) {
-    let message = `Request failed (${res.status}).`;
-    let code: string | undefined;
-    try {
-      const parsed = (await res.json()) as { error?: string; code?: string };
-      if (parsed?.error) message = parsed.error;
-      code = parsed?.code;
-    } catch {
-      // non-JSON error body; keep the generic message
-    }
-    throw new ApiError(res.status, code ?? CODE_FOR_STATUS[res.status] ?? "http_error", message, meta);
-  }
-  return { data: (await res.json()) as T, meta };
-}
-
 export interface ApiClient {
   me(): Promise<{ data: MeResponse; meta: RateMeta }>;
   listCodes(limit?: number): Promise<{ data: { codes: CodeRow[] }; meta: RateMeta }>;
@@ -113,34 +54,98 @@ export interface ApiClient {
   getScans(id: string, days?: number): Promise<{ data: ScansResponse; meta: RateMeta }>;
 }
 
+type SdkLike = ReturnType<typeof makeSdk>;
+
+function makeSdk(key: string, baseUrl: string) {
+  return new OpenQR({ apiKey: key, baseUrl });
+}
+
+function toApiError(e: unknown): ApiError {
+  if (e instanceof OpenQRError) {
+    const meta: RateMeta = {};
+    if (e.rateLimit) {
+      meta.limit = e.rateLimit.limit;
+      meta.remaining = e.rateLimit.remaining;
+      meta.reset = e.rateLimit.reset;
+    }
+    if (e.retryAfter != null) meta.retryAfter = e.retryAfter;
+    return new ApiError(e.status, e.code, e.message, meta);
+  }
+  // fetch throws TypeError on network failure / offline; let it classify as such.
+  throw e;
+}
+
+function metaOf(code: unknown): RateMeta {
+  const c = code as {
+    rateLimit?: { limit: number; remaining: number; reset: number };
+    /** createStaticCode attaches the rate snapshot as `meta`. */
+    meta?: { limit: number; remaining: number; reset: number };
+    idempotentReplay?: boolean;
+  };
+  const rl = c.rateLimit ?? c.meta;
+  const meta: RateMeta = {};
+  if (rl) {
+    meta.limit = rl.limit;
+    meta.remaining = rl.remaining;
+    meta.reset = rl.reset;
+  }
+  if (c.idempotentReplay) meta.idempotentReplay = true;
+  return meta;
+}
+
 export function apiClient(key: string, baseUrl: string = DEFAULT_BASE_URL): ApiClient {
+  const sdk = (): SdkLike => makeSdk(key, baseUrl);
   return {
-    me: () => request<MeResponse>(key, baseUrl, "/v1/me"),
-    listCodes: (limit = 500) =>
-      request<{ codes: CodeRow[] }>(key, baseUrl, `/v1/codes?limit=${limit}`),
-    createDynamic: (input, idempotencyKey) =>
-      request<DynamicCreateResult>(key, baseUrl, "/v1/dynamic", {
-        method: "POST",
-        body: input,
-        idempotencyKey,
-      }),
-    createStatic: (input, idempotencyKey) =>
-      request<StaticCreateResult>(key, baseUrl, "/v1/codes", {
-        method: "POST",
-        body: input,
-        idempotencyKey,
-      }),
-    updateDynamic: (id, patch) =>
-      request<DynamicCreateResult>(key, baseUrl, `/v1/dynamic/${encodeURIComponent(id)}`, {
-        method: "PATCH",
-        body: patch,
-      }),
-    getScans: (id, days) =>
-      request<ScansResponse>(
-        key,
-        baseUrl,
-        `/v1/dynamic/${encodeURIComponent(id)}/scans${days ? `?days=${days}` : ""}`,
-      ),
+    async me() {
+      try {
+        return { data: await sdk().me(), meta: {} };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
+    async listCodes(limit = 500) {
+      try {
+        const page = await sdk().listCodes({ limit });
+        return { data: { codes: page.items }, meta: {} };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
+    async createDynamic(input, idempotencyKey) {
+      try {
+        const code = await sdk().createDynamicCode(input, idempotencyKey);
+        return { data: code as DynamicCreateResult, meta: metaOf(code) };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
+    async createStatic(input, idempotencyKey) {
+      try {
+        const code = (await sdk().createStaticCode(
+          { type: input.type, fields: input.fields, label: input.label },
+          idempotencyKey,
+        )) as unknown as Record<string, unknown>;
+        const { meta: _m, ...data } = code;
+        return { data: data as unknown as StaticCreateResult, meta: metaOf(code) };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
+    async updateDynamic(id, patch) {
+      try {
+        const code = await sdk().updateDynamicCode(id, patch);
+        return { data: code, meta: {} };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
+    async getScans(id, days) {
+      try {
+        return { data: await sdk().getScans(id, days ? { days } : undefined), meta: {} };
+      } catch (e) {
+        throw toApiError(e);
+      }
+    },
   };
 }
 
