@@ -88,10 +88,12 @@ export function describeApiError(e: unknown): UiError {
   };
 }
 
-/** Classify a persisted op error (the coordinator stores code/status/message). */
+/** Classify a persisted op error (the coordinator stores code/status/message/retryAfter). */
 export function describeStoredError(err: OpError | undefined): UiError {
   if (!err) return { kind: "server", title: "Something went wrong.", body: "" };
   return describeApiError(
-    new ApiError(err.status ?? 500, err.code ?? "http_error", err.message),
+    new ApiError(err.status ?? 500, err.code ?? "http_error", err.message, {
+      retryAfter: err.retryAfter,
+    }),
   );
 }

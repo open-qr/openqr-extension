@@ -59,7 +59,7 @@ export function newOpId(): string {
 }
 
 async function effectiveBaseUrl(port: StoragePort): Promise<string | undefined> {
-  if (!import.meta.env.DEV) return undefined;
+  if (!__EXT_DEV__) return undefined;
   const s = await store.settings.get(port);
   return s?.baseUrl;
 }

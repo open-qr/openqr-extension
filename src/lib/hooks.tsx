@@ -78,7 +78,7 @@ export function useTheme(): void {
 /** Dev-only base URL override (production builds always use the real site). */
 export function useDevBaseUrl(): string {
   const settings = useStorageValue<Settings>(KEYS.settings, DEFAULT_SETTINGS);
-  return import.meta.env.DEV && settings.baseUrl ? settings.baseUrl : DEFAULT_BASE_URL;
+  return __EXT_DEV__ && settings.baseUrl ? settings.baseUrl : DEFAULT_BASE_URL;
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

@@ -42,7 +42,7 @@ export default function App() {
   // this popup). chrome:// and store pages grant nothing: degrade to a hint.
   useEffect(() => {
     let alive = true;
-    const devUrl = import.meta.env.DEV ? new URLSearchParams(location.search).get("url") : null;
+    const devUrl = __EXT_DEV__ ? new URLSearchParams(location.search).get("url") : null;
     if (devUrl != null) {
       setTabUrl(devUrl);
       return;

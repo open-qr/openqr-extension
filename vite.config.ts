@@ -3,7 +3,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // Vite's import.meta.env.DEV is false in every `vite build`, whatever the
+  // mode, so dev-only behaviour needs its own compile-time flag.
+  define: { __EXT_DEV__: JSON.stringify(mode === "development") },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { "@": path.resolve("src") },
@@ -28,4 +31,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

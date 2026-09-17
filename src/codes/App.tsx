@@ -478,7 +478,7 @@ function CreatePane() {
 
 function SettingsPane({ account }: { account: AccountState | null }) {
   const { settings, save } = useSettings();
-  const dev = import.meta.env.DEV;
+  const dev = __EXT_DEV__;
 
   return (
     <div className="max-w-lg space-y-6">
