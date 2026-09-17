@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm assert
+      - name: Build dev bundle for e2e
+        run: pnpm build:dev
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: e2e (extensions need a headed browser)
+        run: xvfb-run -a pnpm e2e
+      - name: Upload extension zip
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: openqr-extension
+          path: releases/*.zip

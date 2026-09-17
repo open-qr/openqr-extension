@@ -1,0 +1,9 @@
+Poppins is licensed under the SIL Open Font License, Version 1.1.
+Copyright (c) 2014-2026 Indian Type Foundry.
+
+The full license text is available at:
+https://openfontlicense.org/open-font-license-official-text/
+
+The four bundled files (poppins-400/500/600/700.woff2, latin subset) are
+unmodified copies of the files served by Google Fonts, self-hosted so the
+extension loads no remote subresource at runtime.

@@ -1,0 +1,55 @@
+{
+  "name": "openqr-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official OpenQR Chrome extension: instant QR codes for any page; dynamic codes stay editable and show scan analytics.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-qr/openqr-extension.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.16.1",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:dev": "node scripts/build.mjs --dev",
+    "watch": "node scripts/build.mjs --dev --watch",
+    "assert": "node scripts/assert-build.mjs",
+    "zip": "node scripts/zip.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "icons": "bash scripts/icons.sh"
+  },
+  "dependencies": {
+    "@open-qr/sdk": "0.2.1",
+    "qr-code-styling": "1.9.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.0.9",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/chrome": "0.3.0",
+    "@types/node": "^22.20.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "fflate": "0.8.3",
+    "jsqr": "1.4.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "~6.0.3",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "qr-code-styling@1.9.2": "patches/qr-code-styling.patch"
+    }
+  }
+}

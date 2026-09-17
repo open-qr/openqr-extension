@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Self-hosted Poppins (SIL OFL 1.1; see LICENSE-FONTS). Everything is bundled:
+   the extension loads no remote subresource of any kind. */
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/poppins-700.woff2") format("woff2");
+}
+
+/* OpenQR brand tokens, mirrored from the openqr.uk design system. */
+:root {
+  --bg: #ffffff;
+  --fg: #232e3a;
+  --card: #ffffff;
+  --primary: #0a7a79;
+  --primary-fg: #ffffff;
+  --muted: #f4f6f8;
+  --muted-fg: #5a6573;
+  --accent: #e6f7f7;
+  --border: #d2d9e0;
+  --input: #b6c0cb;
+  --ring: #2bc4c3;
+  --destructive: #dc2626;
+}
+.dark {
+  --bg: #10171f;
+  --fg: #e8edf2;
+  --card: #1a2430;
+  --primary: #2bc4c3;
+  --primary-fg: #10171f;
+  --muted: #151d27;
+  --muted-fg: #aeb9c4;
+  --accent: #0e2a2a;
+  --border: #313d4a;
+  --input: #3f4c5a;
+  --ring: #2bc4c3;
+  --destructive: #f87171;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-muted: var(--muted);
+  --color-muted-fg: var(--muted-fg);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 0.75rem;
+}
+
+html,
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-surface="popup"] {
+  width: 400px;
+  min-height: 560px;
+}
+
+/* The QR preview plate stays white in dark mode: scanners threshold against a
+   light ground, and a dark-mode-styled preview would misrepresent the export. */
+.qr-plate {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-fg hover:opacity-90;
+  }
+  .btn-secondary {
+    @apply border border-border bg-card text-fg hover:bg-muted;
+  }
+  .btn-ghost {
+    @apply text-fg hover:bg-muted;
+  }
+  .btn-danger {
+    @apply border border-destructive/40 text-destructive hover:bg-destructive/10;
+  }
+  .input {
+    @apply w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-fg placeholder:text-muted-fg focus:outline-2 focus:outline-ring;
+  }
+  .card {
+    @apply rounded-card border border-border bg-card;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium leading-4;
+  }
+  .label {
+    @apply text-xs font-medium text-muted-fg;
+  }
+  .note {
+    @apply text-xs leading-relaxed text-muted-fg;
+  }
+}
