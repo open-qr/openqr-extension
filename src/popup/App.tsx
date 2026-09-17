@@ -154,7 +154,7 @@ export default function App() {
   const wifiType = editor?.type === "wifi";
 
   return (
-    <div className="flex min-h-[560px] flex-col gap-4 p-4">
+    <div className="flex max-h-[600px] min-h-[520px] flex-col gap-3.5 overflow-y-auto p-4">
       {toastNode}
 
       {dynamicDone ? (
@@ -166,16 +166,17 @@ export default function App() {
       ) : (
         <>
           <header className="flex items-center justify-between">
-            <h1 className="text-sm font-semibold">
-              {dynamicActive ? "Creating your dynamic QR code…" : "QR code"}
+            <h1 className="flex items-center gap-2 text-sm font-semibold">
+              <img src="/icons/icon-32.png" width={20} height={20} alt="" />
+              OpenQR
             </h1>
-            {dynamicActive && (
+            {dynamicActive ? (
               <span className="badge bg-accent text-fg">{stateLabel(dynamicActive.state)}</span>
-            )}
+            ) : null}
           </header>
 
           <div className="flex justify-center py-1">
-            <QrPreview payload={payload} />
+            <QrPreview payload={payload} size={248} />
           </div>
 
           <PayloadEditor
@@ -219,7 +220,7 @@ export default function App() {
           )}
 
           {account && (
-            <button type="button" className="btn btn-ghost w-full text-sm" disabled={actionsDisabled} onClick={() => void saveToAccount()}>
+            <button type="button" className="btn btn-secondary w-full text-sm" disabled={actionsDisabled} onClick={() => void saveToAccount()}>
               Save to OpenQR
             </button>
           )}

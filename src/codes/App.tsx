@@ -172,7 +172,7 @@ function CodesPane({
 
       {cache && (
         <p className="note">
-          Recent codes: the newest {cache.items.length}
+          Showing the newest {cache.items.length}
           {cache.items.length >= 500 ? " (the list stops at 500)" : ""}. Search covers the codes shown.
           {cache.stale ? " This list may be out of date; Refresh updates it." : ""}
         </p>
@@ -197,7 +197,9 @@ function CodeListRow({ row, selected, onSelect }: { row: CodeRow; selected: bool
   return (
     <button
       type="button"
-      className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted ${selected ? "bg-muted" : ""}`}
+      className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted ${
+        selected ? "bg-accent" : ""
+      }`}
       onClick={onSelect}
     >
       <LazyThumb payload={row.dynamic ? (row.short_url ?? row.destination) : row.destination} />
@@ -209,7 +211,7 @@ function CodeListRow({ row, selected, onSelect }: { row: CodeRow; selected: bool
           {row.dynamic ? `Dynamic · ${row.short_url ?? ""} → ${row.destination}` : `Static · ${row.type}`}
         </span>
       </span>
-      <span className="flex shrink-0 flex-col items-end gap-1">
+      <span className="flex max-w-[45%] shrink-0 flex-col items-end gap-1">
         <span className="flex gap-1">
           {row.dynamic && <span className="badge bg-accent text-fg">dynamic</span>}
           {row.status === "paused" && <span className="badge bg-muted text-muted-fg">paused</span>}
@@ -267,7 +269,7 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
   const destError = row.dynamic ? payloadTooLong(destination) : null;
 
   return (
-    <section className="card mt-4 grid gap-6 p-5 md:grid-cols-[auto_1fr]">
+    <section className="card mt-5 grid gap-6 p-5 md:grid-cols-[auto_1fr]">
       <div className="space-y-3">
         <QrPreview payload={payload} size={208} />
         <div className="flex gap-2">
@@ -276,7 +278,7 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
         </div>
         <button
           type="button"
-          className="btn btn-ghost w-full px-2 py-1.5 text-xs"
+          className="btn btn-secondary w-full px-3 py-2 text-sm"
           onClick={async () => {
             (await copyText(payload)) ? show("Copied") : show("Could not copy");
           }}
@@ -294,7 +296,7 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
                 <span className="label">Destination</span>
                 <div className="flex gap-2">
                   <input
-                    className="input font-mono text-[13px]"
+                    className="input min-w-0 flex-1 font-mono text-[13px]"
                     value={destination}
                     spellCheck={false}
                     onChange={(e) => setDestination(e.target.value)}
@@ -309,16 +311,16 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
                 Changing the destination keeps this printed code working: it redirects through OpenQR.
                 Changing the short link itself can break printed codes, so that stays in the dashboard.
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button type="button" className="btn btn-secondary" onClick={() => void toggleStatus()}>
                   {row.status === "paused" ? "Resume" : "Pause"}
                 </button>
                 <button
                   type="button"
-                  className="btn btn-ghost"
+                  className="btn btn-secondary"
                   onClick={() => openTab(`https://openqr.uk/dashboard/${row.id}?utm_source=openqr-extension`)}
                 >
-                  Open in dashboard
+                  Open in dashboard ↗
                 </button>
               </div>
             </>
@@ -347,22 +349,20 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
             {!scans && !scansError && <p className="note">Loading scans…</p>}
             {scans && (
               <div className="space-y-3">
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                   <Stat label="Total scans" value={scans.scans.total.toLocaleString("en-GB")} />
                   <Stat label="Last 7 days" value={scans.scans.last7.toLocaleString("en-GB")} />
-                  <Stat label="Window" value={`${scans.analytics.days_window} days`} />
                   {scans.scans.topCountry && <Stat label="Top country" value={scans.scans.topCountry} />}
                   {scans.scans.topDevice && <Stat label="Top device" value={scans.scans.topDevice} />}
                 </div>
                 <Sparkline daily={scans.analytics.daily} />
-                {!scans.analytics.by_device && (
-                  <p className="note">
-                    Detailed breakdowns (device, referrer, region) live in the dashboard with Pro.{" "}
-                    <button type="button" className="underline" onClick={() => openTab(SITE_LINKS.pricing)}>
-                      See plans
-                    </button>
-                  </p>
-                )}
+                <p className="note">
+                  Window shown: {scans.analytics.days_window} days (your plan's limit). Detailed breakdowns
+                  (device, referrer, region) live in the dashboard with Pro.{" "}
+                  <button type="button" className="underline" onClick={() => openTab(SITE_LINKS.pricing)}>
+                    See plans
+                  </button>
+                </p>
               </div>
             )}
           </div>
@@ -381,18 +381,26 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-/** Hand-rolled SVG sparkline, the house chart pattern. */
+/** Hand-rolled SVG sparkline with day labels and a peak value, the house chart pattern. */
 function Sparkline({ daily }: { daily: Array<{ day: string; n: number }> }) {
   if (daily.length === 0) return null;
   const w = 480;
-  const h = 80;
+  const h = 72;
   const max = Math.max(...daily.map((d) => d.n), 1);
   const step = daily.length > 1 ? w / (daily.length - 1) : w;
-  const points = daily.map((d, i) => `${i * step},${h - (d.n / max) * (h - 8) - 4}`);
+  const points = daily.map((d, i) => `${i * step},${h - (d.n / max) * (h - 10) - 5}`);
+  const shortDay = (day: string) => day.slice(5).replace("-", "/");
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="h-20 w-full" role="img" aria-label="Scans per day">
-      <polyline points={points.join(" ")} fill="none" stroke="var(--primary)" strokeWidth="2" />
-    </svg>
+    <figure className="space-y-1">
+      <svg viewBox={`0 0 ${w} ${h}`} className="h-[72px] w-full" role="img" aria-label="Scans per day">
+        <polyline points={points.join(" ")} fill="none" stroke="var(--primary)" strokeWidth="2" />
+      </svg>
+      <figcaption className="flex justify-between text-[11px] text-muted-fg">
+        <span>{shortDay(daily[0]!.day)}</span>
+        <span>peak {max.toLocaleString("en-GB")}/day</span>
+        <span>{shortDay(daily[daily.length - 1]!.day)}</span>
+      </figcaption>
+    </figure>
   );
 }
 

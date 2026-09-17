@@ -60,7 +60,7 @@ test.describe("codes page (recent codes + detail)", () => {
     const page = await openCodes(context, extensionId);
     await page.getByText("Spring menu").click();
     await expect(page.getByText("Total scans")).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByText("7 days", { exact: true })).toBeVisible(); // clamped by plan, echoed by server
+    await expect(page.getByText(/Window shown: 7 days/)).toBeVisible(); // clamped by plan, echoed by server
     await expect(page.getByText("Top country")).toBeVisible();
     await expect(page.getByText(/Detailed breakdowns/)).toBeVisible(); // Free: upsell note
   });

@@ -40,12 +40,12 @@ export function ConnectCard({ onConnected, compact }: { onConnected?: () => void
   }
 
   return (
-    <section id="connect" className={compact ? "" : "card space-y-3 p-4"}>
+    <section id="connect" className={compact ? "" : "card space-y-2.5 p-4"}>
       {!compact && (
         <div className="space-y-1">
           <h2 className="text-sm font-semibold">Connect OpenQR</h2>
           <p className="note">
-            Dynamic QR codes stay editable and count scans. They redirect through OpenQR, so you can change the destination after printing.
+            Dynamic QR codes redirect through OpenQR, so they stay editable and count scans.
           </p>
         </div>
       )}
@@ -57,7 +57,7 @@ export function ConnectCard({ onConnected, compact }: { onConnected?: () => void
         Open openqr.uk to create a free key
       </button>
       <p className="note">
-        In the dashboard, create a new key for this extension (name it "Chrome extension"). Keys can be revoked on their own, without touching anything else.
+        Create a new key there (name it "Chrome extension"); keys are revoked on their own.
       </p>
       <div className="space-y-1.5">
         <input
