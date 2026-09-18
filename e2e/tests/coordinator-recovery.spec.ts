@@ -1,9 +1,9 @@
 import { control, expect, fixtureState, seedConnection, test, type FixtureCode } from "../helpers";
 
 test.describe("coordinator recovery (the popup-close race)", () => {
-  test.beforeEach(async ({ context, extensionId }) => {
+  test.beforeEach(async ({ context }) => {
     await control({ action: "reset" });
-    await seedConnection(context, extensionId);
+    await seedConnection(context);
   });
 
   test("closing the popup mid-create leaves an uncertain op; Check replays safely into ONE code", async ({ popup, context }) => {

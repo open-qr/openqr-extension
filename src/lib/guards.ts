@@ -1,9 +1,8 @@
 /**
  * Client-side input guards, run before any API call or render.
- * The server re-validates everything (assertSafeUrl); these guards exist to
- * explain problems in the extension's own words, before a round trip.
+ * The server re-validates everything; these guards exist to explain problems
+ * in the extension's own words, before a round trip.
  */
-import { looksLikeHttpUrl } from "./payloads";
 
 export const MAX_PAYLOAD_CHARS = 2000;
 
@@ -63,5 +62,3 @@ export function payloadTooLong(payload: string): string | null {
   if (payload.length <= MAX_PAYLOAD_CHARS) return null;
   return `This QR code needs ${payload.length.toLocaleString("en-GB")} characters; the limit is 2,000. Shorten the text or use a link.`;
 }
-
-export { looksLikeHttpUrl };

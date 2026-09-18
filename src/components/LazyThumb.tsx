@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { buildQrOptions, createPreview } from "@/lib/qr";
+import { createPreview } from "@/lib/qr";
 
 type PreviewInstance = Awaited<ReturnType<typeof createPreview>>;
 

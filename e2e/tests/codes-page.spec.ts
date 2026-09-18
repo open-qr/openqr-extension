@@ -1,7 +1,7 @@
 import { control, expect, fixtureState, seedConnection, test, type FixtureCode } from "../helpers";
 
 test.describe("codes page (recent codes + detail)", () => {
-  test.beforeEach(async ({ context, extensionId }) => {
+  test.beforeEach(async ({ context }) => {
     await control({ action: "reset" });
     // seed: one dynamic, one static
     await fetch("http://127.0.0.1:8788/v1/dynamic", {
@@ -14,7 +14,7 @@ test.describe("codes page (recent codes + detail)", () => {
       headers: { "Content-Type": "application/json", Authorization: "Bearer oqr_fixturekeyfore2e1234567890XYZ" },
       body: JSON.stringify({ type: "wifi", fields: { ssid: "CafeGuest", password: "sesame", encryption: "WPA" } }),
     });
-    await seedConnection(context, extensionId);
+    await seedConnection(context);
   });
 
   async function openCodes(context: import("@playwright/test").BrowserContext, extensionId: string) {

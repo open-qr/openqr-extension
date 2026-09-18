@@ -1,9 +1,9 @@
 import { control, decodeCanvas, expect, fixtureState, seedConnection, test } from "../helpers";
 
 test.describe("connect + dynamic create", () => {
-  test.beforeEach(async ({ context, extensionId }) => {
+  test.beforeEach(async ({ context }) => {
     await control({ action: "reset" });
-    await seedConnection(context, extensionId);
+    await seedConnection(context);
   });
 
   test("Make editable creates a dynamic code and swaps to the short URL", async ({ popup }) => {

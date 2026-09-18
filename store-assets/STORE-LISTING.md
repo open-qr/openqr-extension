@@ -1,6 +1,6 @@
-# Chrome Web Store listing (submission-ready copy)
+# Chrome Web Store listing
 
-Everything Sam needs to submit. Store submission itself is Sam-gated (developer account, $5 fee, final say on public copy).
+Submission copy for the Chrome Web Store entry, kept here so the listing and the product stay in sync.
 
 ## Identity
 
@@ -9,7 +9,7 @@ Everything Sam needs to submit. Store submission itself is Sam-gated (developer 
 - **Category:** Productivity
 - **Language:** English (UK)
 - **Website:** https://openqr.uk
-- **Package:** `releases/openqr-extension-v0.1.1.zip` (tag v0.1.1, CI-green, verified loading in a clean profile)
+- **Package:** `releases/openqr-extension-v0.1.2.zip` (tag v0.1.2, CI-green, verified loading in a clean profile)
 
 ## Summary (132 chars max)
 
@@ -51,7 +51,7 @@ Create QR codes for web content directly from the browser, and manage OpenQR dyn
 - Not selling data to third parties, not using data for unrelated purposes, not transferring data: yes.
 - Authentication: the API key is stored only in this browser profile on this device; disconnect clears it.
 - Personal communications and website content: the extension reads the active tab URL on click, and whatever the user types into it, only to generate QR codes locally or to create codes on OpenQR when the user explicitly asks.
-- The privacy policy covering openqr.uk handling: https://openqr.uk/privacy. An extension-specific section is staged as a site PR (not yet live).
+- The privacy policy covering openqr.uk handling: https://openqr.uk/privacy.
 
 ## Graphics
 

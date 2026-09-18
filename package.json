@@ -1,6 +1,6 @@
 {
   "name": "openqr-extension",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Official OpenQR Chrome extension: instant QR codes for any page; dynamic codes stay editable and show scan analytics.",
   "type": "module",
@@ -51,5 +51,10 @@
     "patchedDependencies": {
       "qr-code-styling@1.9.2": "patches/qr-code-styling.patch"
     }
+  },
+  "author": "OpenQR",
+  "homepage": "https://openqr.uk",
+  "bugs": {
+    "url": "https://github.com/open-qr/openqr-extension/issues"
   }
 }

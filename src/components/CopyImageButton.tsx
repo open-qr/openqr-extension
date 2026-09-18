@@ -10,13 +10,11 @@ import { exportFilename, renderQrBlob } from "@/lib/qr";
  */
 export function CopyImageButton({ payload }: { payload: string }) {
   const blob = useRef<Blob | null>(null);
-  const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const { show, node } = useToast();
 
   useEffect(() => {
     let cancelled = false;
-    setReady(false);
     if (!payload) {
       blob.current = null;
       return;
@@ -25,7 +23,6 @@ export function CopyImageButton({ payload }: { payload: string }) {
       .then((b) => {
         if (cancelled) return;
         blob.current = b;
-        setReady(true);
       })
       .catch(() => {
         blob.current = null;

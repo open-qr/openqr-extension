@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AccountChip } from "@/components/AccountChip";
 import { ConnectCard } from "@/components/ConnectCard";
 import { CopyImageButton } from "@/components/CopyImageButton";
@@ -35,7 +35,6 @@ export default function App() {
   const account = useStorageValue<AccountState | null>(KEYS.account, null);
   const ops = useStorageValue<Record<string, OpRecord>>(KEYS.ops, {});
   const cache = useStorageValue<CodesCache | null>(KEYS.codesCache, null);
-  const apiKey = useStorageValue<string>(KEYS.apiKey, "");
 
   useEffect(() => {
     void send({ type: "sync-ops" }).catch(() => {});

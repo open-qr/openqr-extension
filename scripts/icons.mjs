@@ -1,18 +1,12 @@
 #!/usr/bin/env node
 /**
- * Produce the manifest icon sizes from the CANONICAL rasterized brand mark
- * (the site's android-chrome-512.png, the same art openqr.uk ships as its
- * favicon), resized through Skia.
+ * Produce the manifest icon sizes by resampling the canonical brand raster
+ * (scripts/assets/android-chrome-512.png, the mark openqr.uk ships as its
+ * favicon) through Skia.
  *
- * Two dead ends documented:
- *  - ImageMagick on this Mac renders the SVG via its internal MSVG engine and
- *    drops the white modules, producing a near-black block (what the toolbar
- *    showed in Sam's first test). Do not go back to magick for the SVG.
- *  - Rendering the SVG with Skia works, but the site's own rasterization is
- *    the brand truth; resample it instead of re-rasterizing.
- *
- * The source PNG lives in this repo at scripts/assets/android-chrome-512.png
- * (copied from the openqr.uk site repo's public/ art, same brand origin).
+ * Not rasterised from the SVG: ImageMagick's internal SVG engine drops the
+ * white modules and yields a near-black block, and Skia-rasterising the SVG
+ * would only approximate art that already exists at 512px.
  */
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { resolve, dirname } from "node:path";

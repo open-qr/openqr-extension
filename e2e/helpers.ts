@@ -10,7 +10,6 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
   popup: (query?: string) => Promise<Page>;
-  errors: string[];
 }>({
   context: async ({}, use) => {
     const profile = fs.mkdtempSync(path.join(os.tmpdir(), "openqr-ext-"));
@@ -22,12 +21,7 @@ export const test = base.extend<{
       headless: false,
       args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
     });
-    let errors: string[] = [];
-    context.on("page", (p) => {
-      p.on("pageerror", (e) => errors.push(String(e)));
-    });
     await use(context);
-    errors = [];
     await context.close();
   },
   extensionId: async ({ context }, use) => {
@@ -47,11 +41,6 @@ export const test = base.extend<{
     };
     await use(open);
   },
-  errors: async ({ context }, use) => {
-    const seen: string[] = [];
-    context.on("page", (p) => p.on("pageerror", (e) => seen.push(String(e))));
-    await use(seen);
-  },
 });
 
 export { expect };
@@ -68,10 +57,9 @@ export async function decodeCanvas(page: Page, selector: string): Promise<string
   return out.data;
 }
 
-/** Point the extension at the fixture API and (optionally) connect it. */
-export async function seedConnection(context: BrowserContext, extensionId: string): Promise<void> {
-  const sw = context.serviceWorkers()[0];
-  if (!sw) throw new Error("no service worker");
+/** Point the extension at the fixture API and connect a seeded account. */
+export async function seedConnection(context: BrowserContext): Promise<void> {
+  const sw = context.serviceWorkers()[0] ?? (await context.waitForEvent("serviceworker", { timeout: 10_000 }));
   await sw.evaluate(async () => {
     await chrome.storage.local.set({
       settings: { theme: "light", baseUrl: "http://127.0.0.1:8788" },

@@ -56,7 +56,7 @@ Notes for working on this repo:
 
 - **Manifest V3, minimal permissions.** `scripts/assert-build.mjs` fails CI if the permission set, host permissions or the no-remote-assets rule are violated, or if the service worker graph drags in UI dependencies.
 - **e2e runs in bundled Chromium, not branded Chrome**: Chrome 137+ ignores `--load-extension`. `__EXT_DEV__` (set by `--mode development`) gates the dev-only API base URL and test hooks.
-- **Payload parity**: `tests/payloads.test.ts` locks the builders to `fixtures/golden-payloads.json`; on a machine with the openqr.uk site repo, `node scripts/verify-server-parity.mjs` diffs the builders against the server's implementation across 35 edge cases, and `scripts/capture-goldens.mjs` recaptures the fixtures from a live local worker.
+- **Payload parity**: `tests/payloads.test.ts` locks the builders to `fixtures/golden-payloads.json`, and `scripts/capture-goldens.mjs` recaptures that file from a live OpenQR worker (set `BASE` and `KEY`) so wire-format drift is caught before release.
 - **The coordinator is the single writer.** Every mutation (creates, destination edits, pause/resume) is persisted as an operation record before it runs, in the service worker, with an idempotency key. Surfaces observe storage; they never race each other.
 
 Built on [`@open-qr/sdk`](https://www.npmjs.com/package/@open-qr/sdk), the same published SDK anyone can use against the [OpenQR API](https://openqr.uk/api).

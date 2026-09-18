@@ -1,12 +1,9 @@
 /**
  * API layer: a thin adapter over the published @open-qr/sdk.
  *
- * The adapter exists to keep two things stable for the rest of the extension:
- *  - one error type (ApiError) with a machine `code`, so the coordinator and
- *    the UI never import SDK internals;
- *  - a uniform {data, meta} return shape with rate/replay metadata.
- * 0.3.0-beta.1 of the SDK grew me()/listCodes/createStaticCode/idempotency;
- * when it stabilises as 0.3.0 this file shrinks further, not grows.
+ * The adapter keeps two things stable for the rest of the extension: one
+ * error type (ApiError) carrying a machine `code`, and a uniform {data, meta}
+ * return shape with rate-limit and idempotency metadata.
  */
 import { OpenQR, OpenQRError } from "@open-qr/sdk";
 import { DEFAULT_BASE_URL } from "./types";
