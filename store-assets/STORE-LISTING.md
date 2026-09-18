@@ -9,7 +9,7 @@ Everything Sam needs to submit. Store submission itself is Sam-gated (developer 
 - **Category:** Productivity
 - **Language:** English (UK)
 - **Website:** https://openqr.uk
-- **Package:** `releases/openqr-extension-v0.1.0.zip` (tag v0.1.0, CI-green, verified loading in a clean profile)
+- **Package:** `releases/openqr-extension-v0.1.1.zip` (tag v0.1.1, CI-green, verified loading in a clean profile)
 
 ## Summary (132 chars max)
 

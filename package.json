@@ -1,6 +1,6 @@
 {
   "name": "openqr-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Official OpenQR Chrome extension: instant QR codes for any page; dynamic codes stay editable and show scan analytics.",
   "type": "module",
@@ -23,7 +23,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "icons": "bash scripts/icons.sh"
+    "icons": "node scripts/icons.mjs"
   },
   "dependencies": {
     "@open-qr/sdk": "0.3.0-beta.1",
