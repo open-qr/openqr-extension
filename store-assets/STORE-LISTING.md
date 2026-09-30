@@ -9,7 +9,7 @@ Submission copy for the Chrome Web Store entry, kept here so the listing and the
 - **Category:** Productivity
 - **Language:** English (UK)
 - **Website:** https://openqr.uk
-- **Package:** `releases/openqr-extension-v0.1.2.zip` (tag v0.1.2, CI-green, verified loading in a clean profile)
+- **Package:** `releases/openqr-extension-v0.2.0.zip` (tag v0.2.0, CI-green, verified loading in a clean profile)
 
 ## Summary (132 chars max)
 
@@ -17,11 +17,12 @@ Submission copy for the Chrome Web Store entry, kept here so the listing and the
 
 ## Description
 
-Open the toolbar button and the page you are on is already a QR code. Copy the image, download PNG (512 to 4096 px) or vector SVG, done. No account needed: static codes are generated entirely on your device, and nothing about them ever touches a network.
+Open the toolbar button and the page you are on is already a QR code. Click it for a full-size view in a tab (with a clean print layout), copy the image, download PNG (512 to 4096 px) or vector SVG, done. No account needed: static codes are generated entirely on your device, and nothing about them ever touches a network.
 
 Need more? One click makes the code dynamic. It redirects through OpenQR with a short URL, so you can change the destination after printing and see scan analytics.
 
 - Instant QR for any page, link, selection or image address (right-click menu)
+- Click the code to view it full size in a tab, print it, or copy and download as before
 - Eight content types: URL, text, email, phone, SMS, WhatsApp, Wi-Fi, location, contact (vCard)
 - Dynamic codes: editable destination, pause and resume, scan analytics, all from the extension
 - Reliable by design: closing the popup mid-create can never lose or duplicate a code
@@ -58,3 +59,9 @@ Create QR codes for web content directly from the browser, and manage OpenQR dyn
 - 1280×800 screenshots: `store-assets/store-1..4` (instant, types, codes+analytics, dark)
 - Promo 440×280: `store-assets/promo-440x280.png`
 - Icon: `public/icons/icon-128.png` (set in the manifest)
+
+## Release notes (per submission)
+
+### v0.2.0
+
+- New: click the QR code to open it full size in its own browser tab. View it directly, print it (the printout is just the QR), or copy and download as before. No new permissions.
