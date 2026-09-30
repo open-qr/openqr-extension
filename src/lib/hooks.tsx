@@ -130,3 +130,11 @@ export const SITE_LINKS = {
 export function openTab(url: string): void {
   void chrome.tabs.create({ url });
 }
+
+/** Full-size QR in its own tab. The payload rides the URL fragment, so it
+ *  never leaves the device and the link survives reloads. */
+export function openViewer(payload: string): void {
+  if (!payload) return;
+  const base = chrome.runtime.getURL("codes.html");
+  void chrome.tabs.create({ url: `${base}?flow=view#p=${encodeURIComponent(payload)}` });
+}

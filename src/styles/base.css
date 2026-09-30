@@ -102,6 +102,14 @@ body[data-surface="popup"] {
   border-radius: var(--radius-card);
 }
 
+/* Printing the full-size view emits only the QR, at a paper-friendly size. */
+@media print {
+  .print-qr canvas {
+    width: 6.5in !important;
+    height: 6.5in !important;
+  }
+}
+
 @layer components {
   .btn {
     @apply inline-flex select-none items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50;

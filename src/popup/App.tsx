@@ -8,7 +8,7 @@ import { PayloadEditor } from "@/components/PayloadEditor";
 import { QrPreview } from "@/components/QrPreview";
 import { submitOp } from "@/lib/coordinator";
 import { describeStoredError } from "@/lib/errors";
-import { chromePort, copyText, openTab, send, SITE_LINKS, useTheme, useToast } from "@/lib/hooks";
+import { chromePort, copyText, openTab, openViewer, send, SITE_LINKS, useTheme, useToast } from "@/lib/hooks";
 import { buildPayload, looksLikeHttpUrl } from "@/lib/payloads";
 import { payloadTooLong, validateDestination } from "@/lib/guards";
 import { store } from "@/lib/store";
@@ -176,7 +176,7 @@ export default function App() {
           </header>
 
           <div className="flex justify-center py-1">
-            <QrPreview payload={payload} size={248} />
+            <QrPreview payload={payload} size={248} onOpen={actionsDisabled ? undefined : () => openViewer(payload)} />
           </div>
 
           <PayloadEditor
@@ -299,7 +299,7 @@ function DynamicResult({
         </button>
       </header>
       <div className="flex justify-center py-1">
-        <QrPreview payload={shortUrl} />
+        <QrPreview payload={shortUrl} onOpen={() => openViewer(shortUrl)} />
       </div>
       <p className="note text-center">
         This code redirects through OpenQR. Edit the destination any time; the printed code keeps working.

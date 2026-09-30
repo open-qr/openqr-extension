@@ -9,7 +9,7 @@ import { PayloadEditor } from "@/components/PayloadEditor";
 import { QrPreview } from "@/components/QrPreview";
 import { apiClient } from "@/lib/api";
 import { submitOp } from "@/lib/coordinator";
-import { chromePort, copyText, openTab, send, SITE_LINKS, useDevBaseUrl, useSettings, useStorageValue, useTheme, useToast } from "@/lib/hooks";
+import { chromePort, copyText, openTab, openViewer, send, SITE_LINKS, useDevBaseUrl, useSettings, useStorageValue, useTheme, useToast } from "@/lib/hooks";
 import { buildPayload, looksLikeHttpUrl } from "@/lib/payloads";
 import { payloadTooLong, validateDestination } from "@/lib/guards";
 import { KEYS, store } from "@/lib/store";
@@ -24,14 +24,16 @@ import type {
   StagedPayload,
 } from "@/lib/types";
 
-type Tab = "codes" | "settings" | "create";
+type Tab = "codes" | "settings" | "create" | "view";
 
 export default function App() {
   useTheme();
   const { show, node: toastNode } = useToast();
   const params = new URLSearchParams(location.search);
 
-  const [tab, setTab] = useState<Tab>(params.get("flow") === "create" ? "create" : "codes");
+  const [tab, setTab] = useState<Tab>(
+    params.get("flow") === "create" ? "create" : params.get("flow") === "view" ? "view" : "codes",
+  );
   const account = useStorageValue<AccountState | null>(KEYS.account, null);
   const ops = useStorageValue<Record<string, OpRecord>>(KEYS.ops, {});
   const cache = useStorageValue<CodesCache | null>(KEYS.codesCache, null);
@@ -42,6 +44,8 @@ export default function App() {
   useEffect(() => {
     if (account && (!cache || cache.stale)) void send({ type: "refresh-cache" }).catch(() => {});
   }, [account, cache]);
+
+  if (tab === "view") return <ViewPane payload={new URLSearchParams(location.hash.slice(1)).get("p") ?? ""} />;
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-6">
@@ -270,7 +274,7 @@ function CodeDetail({ row, account, show }: { row: CodeRow; account: AccountStat
   return (
     <section className="card mt-5 grid gap-6 p-5 md:grid-cols-[auto_1fr]">
       <div className="space-y-3">
-        <QrPreview payload={payload} size={208} />
+        <QrPreview payload={payload} size={208} onOpen={() => openViewer(payload)} />
         <div className="flex gap-2">
           <CopyImageButton payload={payload} />
           <DownloadMenu payload={payload} />
@@ -448,7 +452,7 @@ function CreatePane() {
       />
       {lengthError && <p className="note text-destructive">{lengthError}</p>}
       <div className="flex justify-center">
-        <QrPreview payload={payload} size={208} />
+        <QrPreview payload={payload} size={208} onOpen={lengthError || !payload ? undefined : () => openViewer(payload)} />
       </div>
       <div className="flex gap-2">
         <CopyImageButton payload={payload} />
@@ -475,6 +479,56 @@ function CreatePane() {
       <p className="note">
         Static codes are generated on this device and never touch the network. Dynamic codes redirect through OpenQR and stay editable.
       </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Full-size view (codes.html?flow=view#p=<payload>)
+// ---------------------------------------------------------------------------
+
+/** The QR at the largest size the window comfortably fits, re-fitted on resize. */
+function useFitSize(): number {
+  const fit = () =>
+    Math.min(760, Math.max(280, Math.floor(Math.min(window.innerHeight - 260, window.innerWidth - 96))));
+  const [size, setSize] = useState(fit);
+  useEffect(() => {
+    const onResize = () => setSize(fit());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+    // fit is deterministic on window size only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return size;
+}
+
+function ViewPane({ payload }: { payload: string }) {
+  const size = useFitSize();
+  const lengthError = payload ? payloadTooLong(payload) : null;
+
+  if (!payload || lengthError) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-3 px-6 text-center">
+        <p className="note text-destructive">
+          {lengthError ?? "No QR code to show. Open the OpenQR toolbar button and click the code."}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-5 px-6 py-8">
+      <div className="print-qr">
+        <QrPreview payload={payload} size={size} />
+      </div>
+      <p className="note max-w-xl break-all text-center print:hidden">{payload}</p>
+      <div className="flex flex-wrap justify-center gap-2 print:hidden">
+        <CopyImageButton payload={payload} />
+        <DownloadMenu payload={payload} />
+        <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
+          Print
+        </button>
+      </div>
     </div>
   );
 }

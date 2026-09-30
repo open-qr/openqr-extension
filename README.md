@@ -1,13 +1,13 @@
 # OpenQR for Chrome
 
-The fastest trustworthy way to create a QR code while browsing, from [openqr.uk](https://openqr.uk). Open the toolbar button and the page you are on is already a QR code: copy the image, download PNG or SVG, done. No account, no configuration, nothing leaves your device.
+The fastest trustworthy way to create a QR code while browsing, from [openqr.uk](https://openqr.uk). Open the toolbar button and the page you are on is already a QR code: click it for a full-size view, copy the image, download PNG or SVG, done. No account, no configuration, nothing leaves your device.
 
 When you need more, one click makes the code **dynamic**: it redirects through OpenQR, so you can change the destination after printing and see scan analytics.
 
 ## What it does
 
 - **Instant QR for the current page.** Prefilled the moment the popup opens; static codes are generated entirely on your device.
-- **Copy image or download.** PNG at 512 to 4096 px, or true-vector SVG. The size picker lives inside the download control.
+- **View, copy or download.** Click the code to open it full size in a tab, with a print view that emits only the QR. Copy the image, or download PNG at 512 to 4096 px, or true-vector SVG; the size picker lives inside the download control.
 - **Eight more content types.** URL, text, email, phone, SMS, WhatsApp, Wi-Fi, location and contact (vCard), with payload formats that match openqr.uk byte-for-byte (locked by tests against the server's own builder).
 - **Right-click anything.** Pages, links, selections and image addresses get a "Create QR code for this…" entry that opens a compact create window.
 - **Dynamic codes, done reliably.** "Make editable and view scans" creates a code with a short URL (oqr.to) you can re-point later. Creation runs through a background coordinator with idempotency keys, so closing the popup mid-request can never lose or duplicate a code: it comes back as "Not sure this went through", and Check replays it safely.
