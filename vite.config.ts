@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => ({
     outDir: "dist",
     emptyOutDir: true,
     manifest: true,
+    // Chromium discards modulepreload fetches in extension pages (the
+    // "cross-world extension resource mismatch" warnings), and the files are
+    // local anyway, so the links are pure noise in the console.
+    modulePreload: false,
     rollupOptions: {
       input: {
         popup: path.resolve("popup.html"),
