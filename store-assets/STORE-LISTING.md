@@ -9,7 +9,7 @@ Submission copy for the Chrome Web Store entry, kept here so the listing and the
 - **Category:** Productivity
 - **Language:** English (UK)
 - **Website:** https://openqr.uk
-- **Package:** `releases/openqr-extension-v0.2.0.zip` (tag v0.2.0, CI-green, verified loading in a clean profile)
+- **Package:** `releases/openqr-extension-v0.2.1.zip` (submitted to the Chrome Web Store 2026-11-08; item ID `kmmcpdncekphplapinbnonppddomjmdk`, auto-publish on pass)
 
 ## Summary (132 chars max)
 
@@ -61,6 +61,10 @@ Create QR codes for web content directly from the browser, and manage OpenQR dyn
 - Icon: `public/icons/icon-128.png` (set in the manifest)
 
 ## Release notes (per submission)
+
+### v0.2.1
+
+- Fix: console warnings on load ("cross-world extension resource mismatch"); the build no longer emits modulepreload links. Manifest description shortened to fit the store's 132-char cap. No feature changes.
 
 ### v0.2.0
 
