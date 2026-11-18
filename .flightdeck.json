@@ -1,0 +1,4 @@
+{
+  "_note": "Read by Flightdeck. Names the GrowthOS client this working tree serves, so the link lives where it is true rather than in a hand-maintained list elsewhere.",
+  "growthos": { "clientSlug": "openqr" }
+}

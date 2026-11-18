@@ -39,7 +39,8 @@ When you need more, one click makes the code **dynamic**: it redirects through O
 
 ## Install
 
-From the Chrome Web Store once listed (link to follow), or for development: clone, `pnpm install`, `pnpm build`, then load the `dist/` directory via chrome://extensions with "Load unpacked".
+[<img src="store-assets/promo-440x280.png" align="right" width="216" alt="OpenQR in the Chrome Web Store">](https://chromewebstore.google.com/detail/openqr-qr-code-generator/kmmcpdncekphplapinbnonppddomjmdk)
+From the [Chrome Web Store](https://chromewebstore.google.com/detail/openqr-qr-code-generator/kmmcpdncekphplapinbnonppddomjmdk), or for development: clone, `pnpm install`, `pnpm build`, then load the `dist/` directory via chrome://extensions with "Load unpacked".
 
 ## Development
 
