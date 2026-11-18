@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { downloadBlob, useToast } from "@/lib/hooks";
+import { chromePort, downloadBlob, useToast } from "@/lib/hooks";
 import { exportFilename, renderQrBlob } from "@/lib/qr";
+import { recordValueEvent } from "@/lib/review";
 
 /**
  * Copy the QR image to the clipboard. The PNG is prepared BEFORE the click
@@ -40,9 +41,11 @@ export function CopyImageButton({ payload }: { payload: string }) {
       if (!b) b = await renderQrBlob(payload, 512, "png");
       try {
         await navigator.clipboard.write([new ClipboardItem({ "image/png": b })]);
+        void recordValueEvent(chromePort());
         show("QR image copied");
       } catch {
         downloadBlob(b, exportFilename(payload, 512));
+        void recordValueEvent(chromePort());
         show("Clipboard unavailable, downloaded instead");
       }
     } catch {

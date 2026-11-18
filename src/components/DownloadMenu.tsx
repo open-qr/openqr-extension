@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { downloadBlob, useToast } from "@/lib/hooks";
+import { chromePort, downloadBlob, useToast } from "@/lib/hooks";
 import { EXPORT_SIZES, exportFilename, renderQrBlob } from "@/lib/qr";
+import { recordValueEvent } from "@/lib/review";
 
 /** Download control with the size selection inside it (PNG 512 to 4096 + SVG). */
 export function DownloadMenu({ payload }: { payload: string }) {
@@ -25,6 +26,7 @@ export function DownloadMenu({ payload }: { payload: string }) {
     try {
       const blob = await renderQrBlob(payload, size === "svg" ? 1024 : size, size === "svg" ? "svg" : "png");
       downloadBlob(blob, exportFilename(payload, size));
+      void recordValueEvent(chromePort());
       show(`Saved ${exportFilename(payload, size)}`);
     } catch {
       show("Could not render this QR code. Try a smaller size.");

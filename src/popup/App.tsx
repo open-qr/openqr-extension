@@ -6,11 +6,13 @@ import { DownloadMenu } from "@/components/DownloadMenu";
 import { OpsStrip, surfaceableOps } from "@/components/OpsStrip";
 import { PayloadEditor } from "@/components/PayloadEditor";
 import { QrPreview } from "@/components/QrPreview";
+import { ReviewAsk } from "@/components/ReviewAsk";
 import { submitOp } from "@/lib/coordinator";
 import { describeStoredError } from "@/lib/errors";
 import { chromePort, copyText, openTab, openViewer, send, SITE_LINKS, useTheme, useToast } from "@/lib/hooks";
 import { buildPayload, looksLikeHttpUrl } from "@/lib/payloads";
 import { payloadTooLong, validateDestination } from "@/lib/guards";
+import { recordValueEvent } from "@/lib/review";
 import { store } from "@/lib/store";
 import type {
   AccountState,
@@ -29,7 +31,10 @@ export default function App() {
   const { show, node: toastNode } = useToast();
 
   const account = useStorageValue<AccountState | null>(KEYS.account, null);
-  const ops = useStorageValue<Record<string, OpRecord>>(KEYS.ops, {});
+  // null until the first storage read lands (lets the value-event seeding
+  // below tell "not loaded yet" apart from "genuinely empty").
+  const opsValue = useStorageValue<Record<string, OpRecord> | null>(KEYS.ops, null);
+  const ops = opsValue ?? {};
   const codesCache = useStorageValue<CodesCache | null>(KEYS.codesCache, null);
 
   const [tabUrl, setTabUrl] = useState<string | null>(null);
@@ -92,6 +97,23 @@ export default function App() {
   );
   const lengthError = payload ? payloadTooLong(payload) : null;
   const actionsDisabled = !payload || lengthError != null;
+
+  // Value moments for the one-time rating ask: ops that reach done during
+  // THIS popup session count; ops already done on open were counted (or not)
+  // in their own session and are seeded out.
+  const countedOps = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    if (opsValue === null) return;
+    if (countedOps.current === null) {
+      countedOps.current = new Set(Object.values(opsValue).filter((o) => o.state === "done").map((o) => o.opId));
+    }
+    for (const o of Object.values(opsValue)) {
+      if (o.state === "done" && !countedOps.current.has(o.opId)) {
+        countedOps.current.add(o.opId);
+        void recordValueEvent(chromePort());
+      }
+    }
+  }, [opsValue]);
 
   // Refresh the codes cache on open when connected (single writer: background).
   useEffect(() => {
@@ -233,6 +255,8 @@ export default function App() {
       )}
 
       <OpsStrip ops={surfaceableOps(ops)} onDismiss={() => show("Dismissed")} />
+
+      <ReviewAsk />
 
       {account ? (
         <RecentCodes cache={codesCache} />

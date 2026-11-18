@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "OpenQR: QR Code Generator",
   "short_name": "OpenQR",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Create a QR code for any page instantly. Static codes are made on your device; dynamic codes stay editable with scan analytics.",
   "homepage_url": "https://openqr.uk",
   "minimum_chrome_version": "102",

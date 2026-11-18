@@ -2,7 +2,8 @@
  * Storage layer over chrome.storage (local + session), written so the logic
  * runs unchanged under a fake port in tests.
  *
- * Layout (local): settings, apiKey, account, codesCache, ops, draft.
+ * Layout (local): settings, apiKey, account, codesCache, ops, draft,
+ * valueEvents + reviewAsked (profile-level, not cleared on disconnect).
  * Layout (session): staging (context-menu payload), createWindowId.
  *
  * The API key lives in chrome.storage.local only: never in storage.sync, and
@@ -46,6 +47,8 @@ export const KEYS = {
   draft: "draft",
   staging: "staging",
   createWindowId: "createWindowId",
+  valueEvents: "valueEvents",
+  reviewAsked: "reviewAsked",
 } as const;
 
 export const DEFAULT_SETTINGS: Settings = { theme: "system" };

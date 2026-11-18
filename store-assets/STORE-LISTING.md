@@ -62,6 +62,10 @@ Create QR codes for web content directly from the browser, and manage OpenQR dyn
 
 ## Release notes (per submission)
 
+### v0.2.2
+
+- New: after your third exported QR (or third code created), the popup asks once whether you would rate OpenQR on the Chrome Web Store. Dismiss it and it never returns. No other changes.
+
 ### v0.2.1
 
 - Fix: console warnings on load ("cross-world extension resource mismatch"); the build no longer emits modulepreload links. Manifest description shortened to fit the store's 132-char cap. No feature changes.
