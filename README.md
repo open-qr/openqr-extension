@@ -4,6 +4,8 @@ The fastest trustworthy way to create a QR code while browsing, from [openqr.uk]
 
 When you need more, one click makes the code **dynamic**: it redirects through OpenQR, so you can change the destination after printing and see scan analytics.
 
+The design guidance behind OpenQR is measured, not guessed: [the Scannability Benchmark](https://openqr.uk/research/scannability-benchmark) (DOI [10.5281/zenodo.24352636](https://doi.org/10.5281/zenodo.24352636)) tests how far QR styling can go across four open-source decoders, and its Scannability Margin score ships in the generator at [openqr.uk](https://openqr.uk).
+
 ## What it does
 
 - **Instant QR for the current page.** Prefilled the moment the popup opens; static codes are generated entirely on your device.
